@@ -42,6 +42,7 @@ export default function Home() {
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
   const [isStair, setIsStair] = useState(false)
+  const [deletable, setDeletable] = useState(false) // 삭제 가능 체크박스 상태 추가
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
 
   async function saveCoordinates(newCoordinates: IndexedCoordinate[]) {
@@ -133,6 +134,7 @@ export default function Home() {
         <CoordinateMarkers
           coordinates={coordinates}
           removeCoordinate={removeCoordinate}
+          deletable={deletable} // 삭제 가능 여부 전달
         />
       </Map>
       <div className="controls">
@@ -148,6 +150,16 @@ export default function Home() {
         >
           계단
         </button>
+        <div className="deletable-checkbox">
+          <label>
+            <input
+              type="checkbox"
+              checked={deletable}
+              onChange={e => setDeletable(e.target.checked)}
+            />
+            삭제 가능
+          </label>
+        </div>
       </div>
     </div >
     <style jsx>{`
@@ -161,7 +173,7 @@ export default function Home() {
           background: rgba(255,255,255,0.9);
           padding: 8px; border-radius: 4px;
           box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-          display: flex; gap: 4px;
+          display: flex; flex-direction: column; gap: 4px;
           z-index: 1;
         }
         .controls button {
@@ -175,6 +187,9 @@ export default function Home() {
         .controls button.active {
           background: #007AFF;
           color: #FFF;
+        }
+        .deletable-checkbox {
+          margin-top: 8px;
         }
       `}</style>
   </>
