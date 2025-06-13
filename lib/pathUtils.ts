@@ -1,7 +1,7 @@
 import { Coordinate, IndexedCoordinate } from "@/types/coordinate";
 import { squaredDistance } from "./coordinateUtils";
 
-const THRESHOLD = 0.000000014;
+const THRESHOLD = 0.000000012; // 115 is OK, 125 is not OK
 
 function getGraph(coordinates: IndexedCoordinate[]): Map<number, IndexedCoordinate[]> {
   const graph: Map<number, IndexedCoordinate[]> = new Map();
