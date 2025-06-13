@@ -11,6 +11,7 @@ import { getNearestCoordinate } from "@/lib/coordinateUtils"
 import PathMarker from "@/components/PathMarker";
 import Path from "@/components/Path";
 import { getFastestPath } from "@/lib/pathUtils";
+import PathControls from "@/components/PathControls";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -48,11 +49,20 @@ export default function Home() {
   const [isStart, setIsStart] = useState(true);
   const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
+  const [noStairs, setNoStairs] = useState(false);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
+
   const fastestPath = useMemo(() => {
     if (!startCoordinate || !endCoordinate) return null;
-    return getFastestPath(coordinates, startCoordinate, endCoordinate);
-  }, [coordinates, startCoordinate, endCoordinate]);
+
+    if (noStairs) {
+      const filteredCoordinates = coordinates.filter(coord => !coord.is_stair);
+      return getFastestPath(filteredCoordinates, startCoordinate, endCoordinate);
+    }
+    else {
+      return getFastestPath(coordinates, startCoordinate, endCoordinate);
+    }
+  }, [coordinates, startCoordinate, endCoordinate, noStairs]);
 
   async function handleCenterChange(map: kakao.maps.Map, currentZoomLevel: ZoomLevel) {
     const movedCenter = map.getCenter();
@@ -145,6 +155,10 @@ export default function Home() {
           도착
         </button>
       </div>
+      <PathControls
+        noStairs={noStairs}
+        setNoStairs={setNoStairs}
+      />
     </div >
     <style jsx>{`
         .map-container {
