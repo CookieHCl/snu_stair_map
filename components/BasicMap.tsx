@@ -1,7 +1,7 @@
 "use client";
 
 import { Map } from "react-kakao-maps-sdk"
-import useKakaoLoader from "./useKakaoLoader"
+import useKakaoLoader from "@lib/useKakaoLoader"
 
 export default function BasicMap() {
   useKakaoLoader()
