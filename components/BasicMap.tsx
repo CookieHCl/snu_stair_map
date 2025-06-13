@@ -5,10 +5,12 @@ import useKakaoLoader from "@lib/useKakaoLoader"
 import { useRef, useState } from "react"
 import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
 import CoordinateMarkers from "@components/CoordinateMarkers"
+import SNUBorder from "./SnuBorder";
 
 export default function BasicMap() {
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>([])
+  const [isInSNU, setIsInSNU] = useState(false)
   const [isStair, setIsStair] = useState(false)
   const indexRef = useRef(0)
 
@@ -29,6 +31,10 @@ export default function BasicMap() {
   };
 
   async function addCoordinate(coordinate: Coordinate) {
+    if (!isInSNU) {
+      console.warn("Cannot add coordinate outside SNU area");
+      return;
+    }
     const newCoordinates = [...coordinates, {
       index: indexRef.current++,
       lat: coordinate.lat,
@@ -70,6 +76,10 @@ export default function BasicMap() {
           })
         }}
       >
+        <SNUBorder
+          visible={true}
+          onMouseStateChange={setIsInSNU}
+        />
         <CoordinateMarkers
           coordinates={coordinates}
           removeCoordinate={removeCoordinate}
