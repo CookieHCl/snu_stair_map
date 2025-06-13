@@ -44,43 +44,6 @@ export default function Home() {
   const [isStair, setIsStair] = useState(false)
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
 
-  async function saveCoordinates(newCoordinates: IndexedCoordinate[]) {
-    setCoordinates(newCoordinates)
-
-    const res = await fetch('/api/save-coords', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ coordinates: newCoordinates }),
-    });
-    const json = await res.json();
-    if (json.success) {
-      console.log("Saved coordinates: ", newCoordinates);
-    } else {
-      alert('저장 실패: ' + json.error);
-    }
-  };
-
-  async function addCoordinate(coordinate: Coordinate) {
-    if (!isInSNU) {
-      console.warn("Cannot add coordinate outside SNU area");
-      return;
-    }
-    const newCoordinates = [...coordinates, {
-      index: indexRef.current++,
-      lat: coordinate.lat,
-      lng: coordinate.lng,
-      is_stair: isStair
-    }]
-    console.log("Adding coordinate ", coordinate);
-    await saveCoordinates(newCoordinates)
-  }
-
-  async function removeCoordinate(index: number) {
-    const newCoordinates = coordinates.filter(coord => coord.index !== index);
-    console.log("Removing coordinate ", coordinates.find(coord => coord.index === index));
-    await saveCoordinates(newCoordinates);
-  }
-
   async function handleCenterChange(map: kakao.maps.Map, currentZoomLevel: ZoomLevel) {
     const movedCenter = map.getCenter();
     const movedLat = movedCenter.getLat()
@@ -108,14 +71,6 @@ export default function Home() {
           height: "100%",
         }}
         level={3} // 지도의 확대 레벨
-        onClick={(_, mouseEvent) => {
-          const lat = mouseEvent.latLng.getLat()
-          const lng = mouseEvent.latLng.getLng()
-          addCoordinate({
-            lat: lat,
-            lng: lng
-          })
-        }}
         minLevel={5}
         onZoomChanged={(map) => {
           const newZoomLevel = map.getLevel() as ZoomLevel
@@ -131,7 +86,6 @@ export default function Home() {
         />
         <CoordinateMarkers
           coordinates={coordinates}
-          removeCoordinate={removeCoordinate}
         />
       </Map>
       <div className="controls">

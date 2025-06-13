@@ -4,7 +4,7 @@ import { IndexedCoordinate } from "@/types/coordinate"
 
 interface CoordinateMarkersProps {
   coordinates: IndexedCoordinate[];
-  removeCoordinate: (index: number) => void;
+  removeCoordinate?: (index: number) => void;
 }
 
 export default function CoordinateMarkers({ coordinates, removeCoordinate }: CoordinateMarkersProps) {
@@ -21,7 +21,7 @@ export default function CoordinateMarkers({ coordinates, removeCoordinate }: Coo
         fillOpacity={0.8}
         onClick={() => {
           kakao.maps.event.preventMap();
-          removeCoordinate(coord.index)
+          removeCoordinate?.(coord.index)
         }} // 클릭 시 해당 좌표 제거
       />
     ))}
