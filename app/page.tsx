@@ -107,14 +107,18 @@ export default function Home() {
         <CoordinateMarkers
           coordinates={coordinates}
         />
-        <PathMarker
-          coordinate={startCoordinate}
-          isStart={true}
-        />
-        <PathMarker
-          coordinate={endCoordinate}
-          isStart={false}
-        />
+        {startCoordinate && (
+          <PathMarker
+            coordinate={startCoordinate}
+            isStart={true}
+          />
+        )}
+        {endCoordinate && (
+          <PathMarker
+            coordinate={endCoordinate}
+            isStart={false}
+          />
+        )}
       </Map>
       <div className="controls">
         <button

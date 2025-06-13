@@ -2,13 +2,11 @@ import { IndexedCoordinate } from "@/types/coordinate";
 import { MapMarker } from "react-kakao-maps-sdk";
 
 interface PathMarkerProps {
-  coordinate?: IndexedCoordinate;
+  coordinate: IndexedCoordinate;
   isStart: boolean;
 }
 
 export default function PathMarker({ coordinate, isStart }: PathMarkerProps) {
-  if (!coordinate) return <></>;
-
   const startImage = {
     src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/red_b.png",
     size: {
