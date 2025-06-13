@@ -1,6 +1,6 @@
 "use client";
 
-import { Map } from "react-kakao-maps-sdk"
+import { Map, Circle } from "react-kakao-maps-sdk"
 import useKakaoLoader from "@lib/useKakaoLoader"
 import { useState } from "react"
 
@@ -54,6 +54,18 @@ export default function BasicMap() {
       onClick={(_, mouseEvent) => {
         handleClick(mouseEvent.latLng)
       }}
-    />
+    >
+      {coordinates.map((coord) => (
+        <Circle
+          center={coord}               // 각 좌표마다 Center 지정
+          radius={2}
+          strokeWeight={1}
+          strokeColor="#FF0000"
+          strokeOpacity={1.0}
+          fillColor="#FF0000"
+          fillOpacity={0.8}
+        />
+      ))}
+    </Map>
   )
 }
