@@ -128,7 +128,6 @@ export default function Home() {
         }}
       >
         <SNUBorder
-          visible={true}
           onMouseStateChange={setIsInSNU}
         />
         <CoordinateMarkers
