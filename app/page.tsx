@@ -42,7 +42,7 @@ export default function Home() {
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
   const [isStair, setIsStair] = useState(false)
-  const indexRef = useRef(0)
+  const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
 
   async function saveCoordinates(newCoordinates: IndexedCoordinate[]) {
     setCoordinates(newCoordinates)
