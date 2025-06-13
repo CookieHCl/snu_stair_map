@@ -14,11 +14,11 @@ export default function CoordinateMarkers({ coordinates, removeCoordinate }: Coo
         key={coord.index} // 각 Circle에 고유한 key 지정
         center={{ lat: coord.lat, lng: coord.lng }}               // 각 좌표마다 Center 지정
         radius={5}
-        strokeWeight={1}
+        strokeWeight={2}
         strokeColor={coord.is_stair ? "#00FF33" : "#FF0000"}
         strokeOpacity={1.0}
         fillColor={coord.is_stair ? "#00FF33" : "#FF0000"}
-        fillOpacity={0.8}
+        fillOpacity={0.15}
         onClick={() => {
           kakao.maps.event.preventMap();
           removeCoordinate?.(coord.index)
