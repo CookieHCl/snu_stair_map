@@ -10,8 +10,9 @@ import { coordinates as initialCoordinates } from "@/datas/coordinates.json"
 import { getNearestCoordinate } from "@/lib/coordinateUtils"
 import PathMarker from "@/components/PathMarker";
 import Path from "@/components/Path";
-import { getFastestPath } from "@/lib/pathUtils";
+import { getEdges, getFastestPath } from "@/lib/pathUtils";
 import PathControls from "@/components/PathControls";
+import Edges from "@/components/Edges";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -52,6 +53,9 @@ export default function Home() {
   const [noStairs, setNoStairs] = useState(false);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
 
+  const edges = useMemo(() => {
+    return getEdges(coordinates);
+  }, [coordinates]);
   const fastestPath = useMemo(() => {
     if (!startCoordinate || !endCoordinate) return null;
 
@@ -135,6 +139,9 @@ export default function Home() {
             isStart={false}
           />
         )}
+        <Edges
+          edges={edges}
+        />
         {fastestPath && (
           <Path
             coordinates={fastestPath}

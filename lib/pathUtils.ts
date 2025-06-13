@@ -1,5 +1,39 @@
-import { IndexedCoordinate } from "@/types/coordinate";
+import { Coordinate, IndexedCoordinate } from "@/types/coordinate";
 import { squaredDistance } from "./coordinateUtils";
+
+const THRESHOLD = 0.000000014;
+
+function getGraph(coordinates: IndexedCoordinate[]): Map<number, IndexedCoordinate[]> {
+  const graph: Map<number, IndexedCoordinate[]> = new Map();
+  for (const [index, coord] of coordinates.entries()) {
+    graph.set(index, []);
+    for (const [otherIndex, otherCoord] of coordinates.entries()) {
+      if (index !== otherIndex) {
+        const distance = squaredDistance(coord, otherCoord);
+        if (distance < THRESHOLD) {
+          graph.get(index)?.push(otherCoord);
+        }
+      }
+    }
+  }
+
+  return graph;
+}
+
+
+export function getEdges(coordinates: IndexedCoordinate[]): Coordinate[][] {
+  const graph = getGraph(coordinates);
+  let edges: Coordinate[][] = [];
+
+  for (const [index, neighbors] of graph) {
+    for (const neighbor of neighbors) {
+      edges.push([coordinates[index], neighbor]);
+    }
+  }
+
+  return edges;
+}
+
 
 export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate: IndexedCoordinate, endCoordinate: IndexedCoordinate): IndexedCoordinate[] {
   // coord.index does not match index of the array
@@ -9,19 +43,7 @@ export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate
   });
 
   // connect coordinates that are within a threshold distance
-  const THRESHOLD = 0.000000014;
-  const graph: Map<number, IndexedCoordinate[]> = new Map();
-  coordinates.forEach((coord, index) => {
-    graph.set(index, []);
-    coordinates.forEach((otherCoord, otherIndex) => {
-      if (index !== otherIndex) {
-        const distance = squaredDistance(coord, otherCoord);
-        if (distance < THRESHOLD) {
-          graph.get(index)?.push(otherCoord);
-        }
-      }
-    });
-  });
+  const graph = getGraph(coordinates);
 
   // dijkstra's algorithm
   const startIndex = indexMap.get(startCoordinate.index);
