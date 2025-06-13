@@ -13,7 +13,20 @@ export default function BasicMap() {
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<Coordinate[]>([])
 
-  function setsetCoordinates(latlng: kakao.maps.LatLng) {
+
+  async function saveCoordinates(obj: Coordinate[]) {
+    const res = await fetch('/api/save-json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ coordinates: obj }),
+    });
+    const json = await res.json();
+    if (!json.success) {
+      alert('저장 실패: ' + json.error);
+    }
+  };
+
+  async function handleClick(latlng: kakao.maps.LatLng) {
     const lat = latlng.getLat()
     const lng = latlng.getLng()
 
@@ -21,7 +34,7 @@ export default function BasicMap() {
 
     setCoordinates(newCoordinates)
     console.log("Last clicked: ", { lat, lng })
-    console.log(newCoordinates)
+    await saveCoordinates(newCoordinates)
   }
 
   return (
@@ -39,7 +52,7 @@ export default function BasicMap() {
       }}
       level={3} // 지도의 확대 레벨
       onClick={(_, mouseEvent) => {
-        setsetCoordinates(mouseEvent.latLng)
+        handleClick(mouseEvent.latLng)
       }}
     />
   )
