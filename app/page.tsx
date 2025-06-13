@@ -42,12 +42,19 @@ const CENTER_RANGE: Record<ZoomLevel, { lat: [number, number], lng: [number, num
   },
 }
 
+enum MarkerState {
+  ROAD = 0,
+  STAIR = 1,
+  START = 2,
+  END = 3,
+}
+
 export default function Home() {
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
-  const [isStart, setIsStart] = useState(true);
+  const [markerState, setMarkerState] = useState(MarkerState.START);
   const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [noStairs, setNoStairs] = useState(false);
@@ -67,6 +74,43 @@ export default function Home() {
       return getFastestPath(coordinates, startCoordinate, endCoordinate);
     }
   }, [coordinates, startCoordinate, endCoordinate, noStairs]);
+
+  async function saveCoordinates(newCoordinates: IndexedCoordinate[]) {
+    setCoordinates(newCoordinates)
+
+    const res = await fetch('/api/save-coords', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ coordinates: newCoordinates }),
+    });
+    const json = await res.json();
+    if (json.success) {
+      console.log("Saved coordinates: ", newCoordinates);
+    } else {
+      alert('저장 실패: ' + json.error);
+    }
+  };
+
+  async function addCoordinate(coordinate: Coordinate) {
+    if (!isInSNU) {
+      console.warn("Cannot add coordinate outside SNU area");
+      return;
+    }
+    const newCoordinates = [...coordinates, {
+      index: indexRef.current++,
+      lat: coordinate.lat,
+      lng: coordinate.lng,
+      is_stair: markerState === MarkerState.STAIR
+    }]
+    console.log("Adding coordinate ", coordinate);
+    await saveCoordinates(newCoordinates)
+  }
+
+  async function removeCoordinate(index: number) {
+    const newCoordinates = coordinates.filter(coord => coord.index !== index);
+    console.log("Removing coordinate ", coordinates.find(coord => coord.index === index));
+    await saveCoordinates(newCoordinates);
+  }
 
   async function handleCenterChange(map: kakao.maps.Map, currentZoomLevel: ZoomLevel) {
     const movedCenter = map.getCenter();
@@ -96,19 +140,38 @@ export default function Home() {
         }}
         level={3} // 지도의 확대 레벨
         onClick={(_, mouseEvent) => {
-          const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
-          const otherCoordinate = isStart ? endCoordinate : startCoordinate;
-          const coordinate = getNearestCoordinate(
-            mouseCoordinate,
-            coordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
-          );
+          switch (markerState) {
+            case MarkerState.ROAD:
+            case MarkerState.STAIR:
+              addCoordinate({
+                lat: mouseEvent.latLng.getLat(),
+                lng: mouseEvent.latLng.getLng()
+              });
+              break;
+            case MarkerState.START: {
+              const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
+              const otherCoordinate = endCoordinate;
+              const coordinate = getNearestCoordinate(
+                mouseCoordinate,
+                coordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
+              );
 
-          if (!coordinate) { return; }
-          if (isStart) {
-            setStartCoordinate(coordinate);
-          }
-          else {
-            setEndCoordinate(coordinate);
+              if (!coordinate) { return; }
+              setStartCoordinate(coordinate);
+            }
+              break;
+            case MarkerState.END: {
+              const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
+              const otherCoordinate = startCoordinate;
+              const coordinate = getNearestCoordinate(
+                mouseCoordinate,
+                coordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
+              );
+
+              if (!coordinate) { return; }
+              setEndCoordinate(coordinate);
+            }
+              break;
           }
         }}
         minLevel={5}
@@ -126,6 +189,7 @@ export default function Home() {
         />
         <CoordinateMarkers
           coordinates={coordinates}
+          removeCoordinate={removeCoordinate}
         />
         {startCoordinate && (
           <PathMarker
@@ -150,16 +214,28 @@ export default function Home() {
       </Map>
       <div className="controls">
         <button
-          onClick={() => setIsStart(true)}
-          className={isStart ? "active" : ""}
+          onClick={() => setMarkerState(MarkerState.START)}
+          className={markerState === MarkerState.START ? "active" : ""}
         >
           출발
         </button>
         <button
-          onClick={() => setIsStart(false)}
-          className={!isStart ? "active" : ""}
+          onClick={() => setMarkerState(MarkerState.END)}
+          className={markerState === MarkerState.END ? "active" : ""}
         >
           도착
+        </button>
+        <button
+          onClick={() => setMarkerState(MarkerState.ROAD)}
+          className={markerState === MarkerState.ROAD ? "active" : ""}
+        >
+          도로
+        </button>
+        <button
+          onClick={() => setMarkerState(MarkerState.STAIR)}
+          className={markerState === MarkerState.STAIR ? "active" : ""}
+        >
+          계단
         </button>
       </div>
       {fastestPath && <PathControls
