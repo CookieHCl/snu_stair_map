@@ -69,7 +69,7 @@ export default function Home() {
       index: indexRef.current++,
       lat: coordinate.lat,
       lng: coordinate.lng,
-      is_stair: coordinate.is_stair
+      is_stair: isStair
     }]
     console.log("Adding coordinate ", coordinate);
     await saveCoordinates(newCoordinates)
@@ -113,8 +113,7 @@ export default function Home() {
           const lng = mouseEvent.latLng.getLng()
           addCoordinate({
             lat: lat,
-            lng: lng,
-            is_stair: isStair
+            lng: lng
           })
         }}
         minLevel={5}

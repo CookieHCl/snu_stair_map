@@ -8,5 +8,4 @@ export interface IndexedCoordinate {
 export interface Coordinate {
   lat: number
   lng: number
-  is_stair: boolean
 }
