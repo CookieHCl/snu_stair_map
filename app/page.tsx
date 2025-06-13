@@ -149,29 +149,21 @@ export default function Home() {
                 lng: mouseEvent.latLng.getLng()
               });
               break;
-            case MarkerState.START: {
+            case MarkerState.START:
+            case MarkerState.END:
               const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
-              const otherCoordinate = endCoordinate;
+              const otherCoordinate = markerState === MarkerState.START ? endCoordinate : startCoordinate;
               const coordinate = getNearestCoordinate(
                 mouseCoordinate,
                 coordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
               );
 
               if (!coordinate) { return; }
-              setStartCoordinate(coordinate);
-            }
-              break;
-            case MarkerState.END: {
-              const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
-              const otherCoordinate = startCoordinate;
-              const coordinate = getNearestCoordinate(
-                mouseCoordinate,
-                coordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
-              );
-
-              if (!coordinate) { return; }
-              setEndCoordinate(coordinate);
-            }
+              if (markerState === MarkerState.START) {
+                setStartCoordinate(coordinate);
+              } else {
+                setEndCoordinate(coordinate);
+              }
               break;
           }
         }}
