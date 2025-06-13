@@ -7,9 +7,38 @@ import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
 import CoordinateMarkers from "@components/CoordinateMarkers"
 import SNUBorder from "./SnuBorder";
 
+const CENTER_LAT = 37.4600110643526;
+const CENTER_LNG = 126.95127303920887;
+
+type ZoomLevel = 1 | 2 | 3 | 4 | 5;
+
+const CENTER_RANGE: Record<ZoomLevel, { lat: [number, number], lng: [number, number]}> = {
+  1: {
+    lat: [37.44, 37.47],
+    lng: [126.94, 126.961],
+  },
+  2: {
+    lat: [37.44, 37.47],
+    lng: [126.94, 126.961],
+  },
+  3: {
+    lat: [37.44, 37.47],
+    lng: [126.94, 126.961],
+  },
+  4: {
+    lat: [37.44, 37.47],
+    lng: [126.94, 126.961],
+  },
+  5: {
+    lat: [37.44, 37.47],
+    lng: [126.94, 126.961],
+  },
+}
+
 export default function BasicMap() {
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>([])
+  const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
   const [isStair, setIsStair] = useState(false)
   const indexRef = useRef(0)
@@ -51,14 +80,26 @@ export default function BasicMap() {
     await saveCoordinates(newCoordinates);
   }
 
+  async function handleCenterChange(map: kakao.maps.Map, currentZoomLevel: ZoomLevel) {
+    const movedCenter = map.getCenter();
+    const movedLat = movedCenter.getLat()
+    const movedLng = movedCenter.getLng()
+
+    const centerRange = CENTER_RANGE[currentZoomLevel];
+    const lat = Math.min(Math.max(movedLat, centerRange.lat[0]), centerRange.lat[1]);
+    const lng = Math.min(Math.max(movedLng, centerRange.lng[0]), centerRange.lng[1]);
+    const center = new kakao.maps.LatLng(lat, lng);
+    map.setCenter(center)
+  }
+
   return <>
     <div className="map-container">
       <Map // 지도를 표시할 Container
         id="map"
         center={{
           // 지도의 중심좌표
-          lat: 37.4600110643526,
-          lng: 126.95127303920887,
+          lat: CENTER_LAT,
+          lng: CENTER_LNG,
         }}
         style={{
           // 지도의 크기
@@ -74,6 +115,15 @@ export default function BasicMap() {
             lng: lng,
             is_stair: isStair
           })
+        }}
+        minLevel={5}
+        onZoomChanged={(map) => {
+          const newZoomLevel = map.getLevel() as ZoomLevel
+          setZoomLevel(newZoomLevel)
+          handleCenterChange(map, newZoomLevel)
+        }}
+        onCenterChanged={(map) => {
+          handleCenterChange(map, zoomLevel)
         }}
       >
         <SNUBorder
