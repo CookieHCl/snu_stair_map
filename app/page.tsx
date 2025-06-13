@@ -2,7 +2,7 @@
 
 import { Map } from "react-kakao-maps-sdk"
 import useKakaoLoader from "@lib/useKakaoLoader"
-import { useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
 import CoordinateMarkers from "@components/CoordinateMarkers"
 import SNUBorder from "@components/SnuBorder";
@@ -49,6 +49,10 @@ export default function Home() {
   const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
+  const fastestPath = useMemo(() => {
+    if (!startCoordinate || !endCoordinate) return null;
+    return getFastestPath(coordinates, startCoordinate, endCoordinate);
+  }, [coordinates, startCoordinate, endCoordinate]);
 
   async function handleCenterChange(map: kakao.maps.Map, currentZoomLevel: ZoomLevel) {
     const movedCenter = map.getCenter();
@@ -121,11 +125,9 @@ export default function Home() {
             isStart={false}
           />
         )}
-        {startCoordinate && endCoordinate && (
+        {fastestPath && (
           <Path
-            coordinates={getFastestPath(
-              coordinates, startCoordinate, endCoordinate
-            )}
+            coordinates={fastestPath}
           />
         )}
       </Map>
