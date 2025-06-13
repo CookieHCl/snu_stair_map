@@ -8,36 +8,48 @@ enum MarkerState {
 interface MarkerControlsProps {
   markerState: MarkerState;
   setMarkerState: (value: MarkerState) => void;
+  deletable: boolean;
+  setDeletable: (value: boolean) => void;
 }
 
 
-export default function MarkerControls({ markerState, setMarkerState }: MarkerControlsProps) {
+export default function MarkerControls({ markerState, setMarkerState, deletable, setDeletable }: MarkerControlsProps) {
   return <div>
     <div className="marker-controls">
-      <button
-        onClick={() => setMarkerState(MarkerState.START)}
-        className={markerState === MarkerState.START ? "active" : ""}
-      >
-        출발
-      </button>
-      <button
-        onClick={() => setMarkerState(MarkerState.END)}
-        className={markerState === MarkerState.END ? "active" : ""}
-      >
-        도착
-      </button>
-      <button
-        onClick={() => setMarkerState(MarkerState.ROAD)}
-        className={markerState === MarkerState.ROAD ? "active" : ""}
-      >
-        도로
-      </button>
-      <button
-        onClick={() => setMarkerState(MarkerState.STAIR)}
-        className={markerState === MarkerState.STAIR ? "active" : ""}
-      >
-        계단
-      </button>
+      <div>
+        <button
+          onClick={() => setMarkerState(MarkerState.START)}
+          className={markerState === MarkerState.START ? "active" : ""}
+        >
+          출발
+        </button>
+        <button
+          onClick={() => setMarkerState(MarkerState.END)}
+          className={markerState === MarkerState.END ? "active" : ""}
+        >
+          도착
+        </button>
+        <button
+          onClick={() => setMarkerState(MarkerState.ROAD)}
+          className={markerState === MarkerState.ROAD ? "active" : ""}
+        >
+          도로
+        </button>
+        <button
+          onClick={() => setMarkerState(MarkerState.STAIR)}
+          className={markerState === MarkerState.STAIR ? "active" : ""}
+        >
+          계단
+        </button>
+      </div>
+      <label className="deletable-checkbox">
+        <input
+          type="checkbox"
+          checked={deletable}
+          onChange={e => setDeletable(e.target.checked)}
+        />
+        삭제 가능
+      </label>
     </div>
     <style jsx>{`
         .marker-controls {
@@ -46,7 +58,7 @@ export default function MarkerControls({ markerState, setMarkerState }: MarkerCo
           background: rgba(255,255,255,0.9);
           padding: 8px; border-radius: 4px;
           box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-          display: flex; gap: 4px;
+          display: flex; flex-direction: column; gap: 4px;
           z-index: 1;
         }
         .marker-controls button {
@@ -60,6 +72,9 @@ export default function MarkerControls({ markerState, setMarkerState }: MarkerCo
         .marker-controls button.active {
           background: #007AFF;
           color: #FFF;
+        }
+        .deletable-checkbox {
+          margin-top: 8px;
         }
       `}</style>
   </div>;

@@ -56,6 +56,7 @@ export default function Home() {
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
   const [markerState, setMarkerState] = useState(MarkerState.START);
+  const [deletable, setDeletable] = useState(false) // 삭제 가능 체크박스 상태 추가
   const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [noStairs, setNoStairs] = useState(false);
@@ -183,6 +184,7 @@ export default function Home() {
         <CoordinateMarkers
           coordinates={coordinates}
           removeCoordinate={removeCoordinate}
+          deletable={deletable} // 삭제 가능 여부 전달
         />
         {startCoordinate && (
           <PathMarker
@@ -208,6 +210,8 @@ export default function Home() {
       <MarkerControls
         markerState={markerState}
         setMarkerState={setMarkerState}
+        deletable={deletable}
+        setDeletable={setDeletable}
       />
       {fastestPath && <PathControls
         noStairs={noStairs}
