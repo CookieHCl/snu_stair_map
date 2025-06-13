@@ -9,6 +9,8 @@ import SNUBorder from "@components/SnuBorder";
 import { coordinates as initialCoordinates } from "@/datas/coordinates.json"
 import { getNearestCoordinate } from "@/lib/coordinateUtils"
 import PathMarker from "@/components/PathMarker";
+import Path from "@/components/Path";
+import { getFastestPath } from "@/lib/pathUtils";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -117,6 +119,13 @@ export default function Home() {
           <PathMarker
             coordinate={endCoordinate}
             isStart={false}
+          />
+        )}
+        {startCoordinate && endCoordinate && (
+          <Path
+            coordinates={getFastestPath(
+              coordinates, startCoordinate, endCoordinate
+            )}
           />
         )}
       </Map>
