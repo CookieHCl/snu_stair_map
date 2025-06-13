@@ -12,6 +12,7 @@ interface Coordinate {
 export default function BasicMap() {
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<Coordinate[]>([])
+  const [zoomLevel, setZoomLevel] = useState<number>(3)
 
 
   async function saveCoordinates(obj: Coordinate[]) {
@@ -50,9 +51,14 @@ export default function BasicMap() {
         width: "100%",
         height: "100%",
       }}
-      level={3} // 지도의 확대 레벨
+      level={zoomLevel} // 지도의 확대 레벨
       onClick={(_, mouseEvent) => {
         handleClick(mouseEvent.latLng)
+      }}
+      minLevel={5}
+      onZoomChanged={(map) => {
+        const level = map.getLevel()
+        setZoomLevel(level)
       }}
     />
   )
