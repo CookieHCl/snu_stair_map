@@ -77,9 +77,13 @@ export default function Home() {
         level={3} // 지도의 확대 레벨
         onClick={(_, mouseEvent) => {
           const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
-          const coordinate = getNearestCoordinate(mouseCoordinate, coordinates);
-          if (!coordinate) { return; }
+          const otherCoordinate = isStart ? endCoordinate : startCoordinate;
+          const coordinate = getNearestCoordinate(
+            mouseCoordinate,
+            coordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
+          );
 
+          if (!coordinate) { return; }
           if (isStart) {
             setStartCoordinate(coordinate);
           }
