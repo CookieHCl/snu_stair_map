@@ -7,6 +7,8 @@ import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
 import CoordinateMarkers from "@components/CoordinateMarkers"
 import SNUBorder from "@components/SnuBorder";
 import { coordinates as initialCoordinates } from "@/datas/coordinates.json"
+import { getNearestCoordinate } from "@/lib/coordinateUtils"
+import PathMarker from "@/components/PathMarker";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -41,7 +43,9 @@ export default function Home() {
   const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
-  const [isStair, setIsStair] = useState(false)
+  const [isStart, setIsStart] = useState(true);
+  const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
+  const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
 
   async function handleCenterChange(map: kakao.maps.Map, currentZoomLevel: ZoomLevel) {
@@ -71,6 +75,18 @@ export default function Home() {
           height: "100%",
         }}
         level={3} // 지도의 확대 레벨
+        onClick={(_, mouseEvent) => {
+          const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
+          const coordinate = getNearestCoordinate(mouseCoordinate, coordinates);
+          if (!coordinate) { return; }
+
+          if (isStart) {
+            setStartCoordinate(coordinate);
+          }
+          else {
+            setEndCoordinate(coordinate);
+          }
+        }}
         minLevel={5}
         onZoomChanged={(map) => {
           const newZoomLevel = map.getLevel() as ZoomLevel
@@ -87,19 +103,27 @@ export default function Home() {
         <CoordinateMarkers
           coordinates={coordinates}
         />
+        <PathMarker
+          coordinate={startCoordinate}
+          isStart={true}
+        />
+        <PathMarker
+          coordinate={endCoordinate}
+          isStart={false}
+        />
       </Map>
       <div className="controls">
         <button
-          onClick={() => setIsStair(false)}
-          className={!isStair ? "active" : ""}
+          onClick={() => setIsStart(true)}
+          className={isStart ? "active" : ""}
         >
-          도로
+          출발
         </button>
         <button
-          onClick={() => setIsStair(true)}
-          className={isStair ? "active" : ""}
+          onClick={() => setIsStart(false)}
+          className={!isStart ? "active" : ""}
         >
-          계단
+          도착
         </button>
       </div>
     </div >
