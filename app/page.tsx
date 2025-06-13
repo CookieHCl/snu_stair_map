@@ -155,10 +155,10 @@ export default function Home() {
           도착
         </button>
       </div>
-      <PathControls
+      {fastestPath && <PathControls
         noStairs={noStairs}
         setNoStairs={setNoStairs}
-      />
+      />}
     </div >
     <style jsx>{`
         .map-container {
