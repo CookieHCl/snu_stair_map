@@ -1,11 +1,12 @@
 "use client";
 
-import { Map, Circle } from "react-kakao-maps-sdk"
+import { Map } from "react-kakao-maps-sdk"
 import useKakaoLoader from "@lib/useKakaoLoader"
 import { useRef, useState } from "react"
 import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
 import CoordinateMarkers from "@components/CoordinateMarkers"
 import SNUBorder from "@components/SnuBorder";
+import { coordinates as initialCoordinates } from "@/datas/coordinates.json"
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -37,7 +38,7 @@ const CENTER_RANGE: Record<ZoomLevel, { lat: [number, number], lng: [number, num
 
 export default function Home() {
   useKakaoLoader()
-  const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>([])
+  const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
   const [isStair, setIsStair] = useState(false)

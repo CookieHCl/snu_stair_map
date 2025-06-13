@@ -6,7 +6,7 @@ import path from 'path';
 export async function POST(request: NextRequest) {
 	try {
 		const { coordinates } = await request.json();
-		const filePath = path.join(process.cwd(), 'coordinates.json');
+		const filePath = path.join(process.cwd(), 'datas', 'coordinates.json');
 
 		await fs.promises.writeFile(
 			filePath,
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 			'utf8'
 		);
 
-		return NextResponse.json({ success: true, path: '/coordinates.json' });
+		return NextResponse.json({ success: true, path: 'datas/coordinates.json' });
 	} catch (err: any) {
 		console.error(err);
 		return NextResponse.json(
