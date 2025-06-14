@@ -17,6 +17,8 @@ import MarkerControls from "@/components/MarkerControls";
 import { MarkerState } from "@/types/markerState";
 import GetDirections from "@/components/GetDirections";
 import { useToast } from "@/components/toast/ToastProvider";
+import snuBuildings from "@/datas/snu_buildings_coords.json";
+import SNUBuildingMarker from "@/components/SNUBuildingMarker";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -187,6 +189,9 @@ export default function Homepage() {
             removeCoordinate={removeCoordinate}
             deletable={deletable} // 삭제 가능 여부 전달
           />
+          {
+            snuBuildings.map(building => <SNUBuildingMarker building={building} />)
+          }
         </>}
         {startCoordinate && <PathMarker
           coordinate={startCoordinate}
