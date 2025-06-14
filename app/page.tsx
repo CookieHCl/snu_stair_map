@@ -208,8 +208,13 @@ export default function Home() {
       />
       {
         isPathMode ? <PathControls
+          fastestPath={fastestPath}
           noStairs={noStairs}
           setNoStairs={setNoStairs}
+          markerState={markerState}
+          setMarkerState={setMarkerState}
+          startCoordinate={startCoordinate}
+          endCoordinate={endCoordinate}
         /> : <GetDirections startPathMode={() => setIsPathMode(true)} />
       }
     </div >

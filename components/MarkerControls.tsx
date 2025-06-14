@@ -9,21 +9,9 @@ interface MarkerControlsProps {
 
 
 export default function MarkerControls({ markerState, setMarkerState, deletable, setDeletable }: MarkerControlsProps) {
-  return <div>
+  return <>
     <div className="marker-controls">
       <div>
-        <button
-          onClick={() => setMarkerState(markerState === MarkerState.START ? MarkerState.NONE : MarkerState.START)}
-          className={markerState === MarkerState.START ? "active" : ""}
-        >
-          출발
-        </button>
-        <button
-          onClick={() => setMarkerState(markerState === MarkerState.END ? MarkerState.NONE : MarkerState.END)}
-          className={markerState === MarkerState.END ? "active" : ""}
-        >
-          도착
-        </button>
         <button
           onClick={() => setMarkerState(markerState === MarkerState.ROAD ? MarkerState.NONE : MarkerState.ROAD)}
           className={markerState === MarkerState.ROAD ? "active" : ""}
@@ -72,5 +60,5 @@ export default function MarkerControls({ markerState, setMarkerState, deletable,
           margin-top: 8px;
         }
       `}</style>
-  </div>;
+  </>;
 }

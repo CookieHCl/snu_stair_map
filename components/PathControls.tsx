@@ -1,13 +1,22 @@
+import { coordinateToString } from "@/lib/coordinateUtils";
+import { IndexedCoordinate } from "@/types/coordinate";
+import { MarkerState } from "@/types/markerState";
+
 interface PathControlsProps {
+  fastestPath: IndexedCoordinate[] | null;
   noStairs: boolean;
   setNoStairs: (value: boolean) => void;
+  markerState: MarkerState;
+  setMarkerState: (value: MarkerState) => void;
+  startCoordinate?: IndexedCoordinate;
+  endCoordinate?: IndexedCoordinate;
 }
 
 
-export default function PathControls({ noStairs, setNoStairs }: PathControlsProps) {
-  return <div>
+export default function PathControls({ fastestPath, noStairs, setNoStairs, markerState, setMarkerState, startCoordinate, endCoordinate }: PathControlsProps) {
+  return <>
     <div className="path-controls">
-      <div className="nostairs-checkbox">
+      {fastestPath ? <div className="path-found">
         <label>
           <input
             type="checkbox"
@@ -16,7 +25,24 @@ export default function PathControls({ noStairs, setNoStairs }: PathControlsProp
           />
           계단 제거
         </label>
-      </div>
+        <label>
+          경로를 찾았습니다!
+        </label>
+      </div> : <div className="path-not-found">
+        출발지점과 도착지점을 선택해주세요!
+      </div>}
+      <button
+        onClick={() => setMarkerState(markerState === MarkerState.START ? MarkerState.NONE : MarkerState.START)}
+        className={markerState === MarkerState.START ? "active" : ""}
+      >
+        출발: {startCoordinate ? coordinateToString(startCoordinate) : "-, -"}
+      </button>
+      <button
+        onClick={() => setMarkerState(markerState === MarkerState.END ? MarkerState.NONE : MarkerState.END)}
+        className={markerState === MarkerState.END ? "active" : ""}
+      >
+        도착: {endCoordinate ? coordinateToString(endCoordinate) : "-, -"}
+      </button>
     </div>
     <style jsx>{`
         .path-controls {
@@ -28,6 +54,21 @@ export default function PathControls({ noStairs, setNoStairs }: PathControlsProp
           display: flex; flex-direction: column; gap: 4px;
           z-index: 1;
         }
+        .path-found {
+          display: flex; flex-direction: column; gap: 4px;
+        }
+        .path-controls button {
+          border: none;
+          padding: 4px 8px;
+          border-radius: 4px;
+          background: #eee;
+          color: #333;
+          cursor: pointer;
+        }
+        .path-controls button.active {
+          background: #007AFF;
+          color: #FFF;
+        }
       `}</style>
-  </div>;
+  </>;
 }
