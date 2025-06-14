@@ -67,12 +67,14 @@ export default function Homepage() {
   const edges = useMemo(() => {
     return getEdges(coordinates);
   }, [coordinates]);
+  const noStairCoordinates = useMemo(() => {
+    return coordinates.filter(coord => !coord.is_stair);
+  }, [coordinates]);
   const fastestPath = useMemo(() => {
     if (!startCoordinate || !endCoordinate) return undefined;
 
     if (noStairs) {
-      const filteredCoordinates = coordinates.filter(coord => !coord.is_stair);
-      return getFastestPath(filteredCoordinates, startCoordinate, endCoordinate);
+      return getFastestPath(noStairCoordinates, startCoordinate, endCoordinate);
     }
     else {
       return getFastestPath(coordinates, startCoordinate, endCoordinate);
@@ -153,10 +155,18 @@ export default function Homepage() {
             case MarkerState.START:
             case MarkerState.END:
               const otherCoordinate = markerState === MarkerState.START ? endCoordinate : startCoordinate;
-              const coordinate = getNearestCoordinate(
+              let coordinate = getNearestCoordinate(
                 mouseCoordinate,
                 coordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
               );
+
+              if (noStairs && coordinate?.is_stair) {
+                showToast(`${markerState == MarkerState.START ? "시작점" : "끝점"}이 계단에 위치하고 있어 가장 가까운 도로를 선택합니다.`);
+                coordinate = getNearestCoordinate(
+                  mouseCoordinate,
+                  noStairCoordinates.filter(coord => coord.index !== (otherCoordinate?.index ?? -1))
+                );
+              }
 
               if (!coordinate) { return; }
               if (markerState === MarkerState.START) {
@@ -219,12 +229,11 @@ export default function Homepage() {
         noStairs={noStairs}
         setNoStairs={(noStairs) => {
           if (noStairs && (startCoordinate?.is_stair || endCoordinate?.is_stair)) {
-            const filteredCoordinates = coordinates.filter(coord => !coord.is_stair);
             if (startCoordinate?.is_stair) {
-              setStartCoordinate(getNearestCoordinate(startCoordinate, filteredCoordinates));
+              setStartCoordinate(getNearestCoordinate(startCoordinate, noStairCoordinates));
             }
             if (endCoordinate?.is_stair) {
-              setEndCoordinate(getNearestCoordinate(endCoordinate, filteredCoordinates));
+              setEndCoordinate(getNearestCoordinate(endCoordinate, noStairCoordinates));
             }
             showToast("시작점 또는 끝점이 계단에 위치하고 있어 가장 가까운 도로를 선택합니다.");
           }
