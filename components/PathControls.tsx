@@ -30,7 +30,7 @@ export default function PathControls({ fastestPath, noStairs, setNoStairs, marke
           경로를 찾았습니다!
         </label>
       </div> : <div className="path-not-found">
-        출발지점과 도착지점을 선택해주세요!
+        {startCoordinate ? "도착지점을 선택해주세요!" : "출발지점을 선택해주세요!"}
       </div>}
       <button
         onClick={() => setMarkerState(markerState === MarkerState.START ? MarkerState.NONE : MarkerState.START)}

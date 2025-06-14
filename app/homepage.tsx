@@ -158,6 +158,9 @@ export default function Homepage() {
 
               if (!coordinate) { return; }
               if (markerState === MarkerState.START) {
+                if (!startCoordinate) {
+                  setMarkerState(MarkerState.END);
+                }
                 setStartCoordinate(coordinate);
               } else {
                 setEndCoordinate(coordinate);
@@ -233,7 +236,10 @@ export default function Homepage() {
           setNoStairs(false);
           setMarkerState(MarkerState.NONE);
         }}
-      /> : <GetDirections startPathMode={() => setIsPathMode(true)} />}
+      /> : <GetDirections startPathMode={() => {
+        setMarkerState(MarkerState.START)
+        setIsPathMode(true)
+      }} />}
     </div >
     <style jsx>{`
         .map-container {
