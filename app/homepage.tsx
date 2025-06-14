@@ -49,10 +49,12 @@ const CENTER_RANGE: Record<ZoomLevel, { lat: [number, number], lng: [number, num
 }
 
 export default function Homepage() {
+  const showDebugComponents = true; // Set this to false in production
+
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
-  const [isInSNU, setIsInSNU] = useState(false)
+  const [isInSNU, setIsInSNU] = useState(!showDebugComponents)
   const [markerState, setMarkerState] = useState(MarkerState.NONE);
   const [deletable, setDeletable] = useState(false) // 삭제 가능 체크박스 상태 추가
   const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
@@ -61,8 +63,6 @@ export default function Homepage() {
   const [isPathMode, setIsPathMode] = useState(false);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
   const { showToast } = useToast();
-
-  const showDebugComponents = true; // Set this to false in production
 
   const edges = useMemo(() => {
     return getEdges(coordinates);
