@@ -1,6 +1,7 @@
-import { coordinateToString } from "@/lib/coordinateUtils";
+import { coordinatePrettyString } from "@/lib/coordinateUtils";
 import { IndexedCoordinate, PathType } from "@/types/coordinate";
 import { MarkerState } from "@/types/markerState";
+import { SNUBuilding } from "@/types/snu_building";
 
 interface PathControlsProps {
   fastestPath?: PathType;
@@ -11,10 +12,11 @@ interface PathControlsProps {
   startCoordinate?: IndexedCoordinate;
   endCoordinate?: IndexedCoordinate;
   exitPathMode: () => void;
+  buildings: SNUBuilding[];
 }
 
 
-export default function PathControls({ fastestPath, noStairs, setNoStairs, markerState, setMarkerState, startCoordinate, endCoordinate, exitPathMode }: PathControlsProps) {
+export default function PathControls({ fastestPath, noStairs, setNoStairs, markerState, setMarkerState, startCoordinate, endCoordinate, exitPathMode, buildings }: PathControlsProps) {
   console.log("PathControls rendered", fastestPath)
 
   return <>
@@ -42,13 +44,13 @@ export default function PathControls({ fastestPath, noStairs, setNoStairs, marke
         onClick={() => setMarkerState(markerState === MarkerState.START ? MarkerState.NONE : MarkerState.START)}
         className={markerState === MarkerState.START ? "active" : ""}
       >
-        출발: {startCoordinate ? coordinateToString(startCoordinate) : "-, -"}
+        출발: {startCoordinate ? coordinatePrettyString(startCoordinate, buildings) : "-"}
       </button>
       <button
         onClick={() => setMarkerState(markerState === MarkerState.END ? MarkerState.NONE : MarkerState.END)}
         className={markerState === MarkerState.END ? "active" : ""}
       >
-        도착: {endCoordinate ? coordinateToString(endCoordinate) : "-, -"}
+        도착: {endCoordinate ? coordinatePrettyString(endCoordinate, buildings) : "-"}
       </button>
       <button
         onClick={() => exitPathMode()}

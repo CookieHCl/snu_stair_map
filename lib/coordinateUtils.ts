@@ -1,7 +1,13 @@
 import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
+import { SNUBuilding } from "@/types/snu_building";
 
 export function coordinateToString(coordinate: Coordinate): string {
   return `${coordinate.lat.toFixed(4)},${coordinate.lng.toFixed(4)}`;
+}
+
+export function coordinatePrettyString(coordinate: Coordinate, buildings: SNUBuilding[]): string {
+  const building = getNearestBuilding(coordinate, buildings);
+  return `${building!.dong} 근처`
 }
 
 export function squaredDistance(a: Coordinate, b: Coordinate): number {
@@ -27,4 +33,23 @@ export function getNearestCoordinate(mouseCoordinate: Coordinate, coordinates: I
   }
 
   return nearestCoordinate;
+}
+
+export function getNearestBuilding(coordinate: Coordinate, buildings: SNUBuilding[]): SNUBuilding | undefined {
+  if (buildings.length === 0) {
+    return undefined;
+  }
+
+  let nearestBuilding = buildings[0];
+  let minDistance = squaredDistance(coordinate, nearestBuilding);
+
+  for (const building of buildings) {
+    const currentDistance = squaredDistance(coordinate, building);
+    if (currentDistance < minDistance) {
+      minDistance = currentDistance;
+      nearestBuilding = building;
+    }
+  }
+
+  return nearestBuilding;
 }

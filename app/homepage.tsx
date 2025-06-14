@@ -241,6 +241,7 @@ export default function Homepage() {
           setNoStairs(false);
           setMarkerState(MarkerState.NONE);
         }}
+        buildings={snuBuildings}
       /> : <GetDirections startPathMode={() => {
         setMarkerState(MarkerState.START)
         setIsPathMode(true)
