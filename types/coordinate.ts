@@ -9,3 +9,8 @@ export interface Coordinate {
   lat: number
   lng: number
 }
+
+export interface PathType {
+  roads: IndexedCoordinate[][]
+  stairs: IndexedCoordinate[][]
+}

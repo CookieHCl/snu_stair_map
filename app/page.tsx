@@ -64,7 +64,7 @@ export default function Home() {
     return getEdges(coordinates);
   }, [coordinates]);
   const fastestPath = useMemo(() => {
-    if (!startCoordinate || !endCoordinate) return null;
+    if (!startCoordinate || !endCoordinate) return undefined;
 
     if (noStairs) {
       const filteredCoordinates = coordinates.filter(coord => !coord.is_stair);
@@ -195,7 +195,7 @@ export default function Home() {
           edges={edges}
         />}
         {fastestPath && <Path
-          coordinates={fastestPath}
+          path={fastestPath}
         />}
       </Map>
       {showDebugComponents && <MarkerControls

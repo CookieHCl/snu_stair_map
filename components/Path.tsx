@@ -1,18 +1,25 @@
-import { IndexedCoordinate } from "@/types/coordinate";
+import { IndexedCoordinate, PathType } from "@/types/coordinate";
 import { Polyline } from "react-kakao-maps-sdk";
 
 interface PathProps {
-  coordinates: IndexedCoordinate[];
+  path: PathType;
 }
 
-export default function Path({ coordinates }: PathProps) {
-  return (
+export default function Path({ path }: PathProps) {
+  return <>
     <Polyline
-      path={coordinates.map(coord => ({ lat: coord.lat, lng: coord.lng }))}
+      path={path.roads.map(coords => coords.map(coord => ({ lat: coord.lat, lng: coord.lng })))}
       strokeWeight={5}
-      strokeColor="#0000FF"
+      strokeColor="#0016FF"
       strokeOpacity={1.0}
       strokeStyle="solid"
     />
-  );
+    <Polyline
+      path={path.stairs.map(coords => coords.map(coord => ({ lat: coord.lat, lng: coord.lng })))}
+      strokeWeight={5}
+      strokeColor="#FF00FF"
+      strokeOpacity={1.0}
+      strokeStyle="solid"
+    />
+  </>;
 }

@@ -1,4 +1,4 @@
-import { Coordinate, IndexedCoordinate } from "@/types/coordinate";
+import { Coordinate, IndexedCoordinate, PathType } from "@/types/coordinate";
 import { squaredDistance } from "./coordinateUtils";
 
 const THRESHOLD = 0.000000012; // 115 is OK, 125 is not OK
@@ -35,7 +35,7 @@ export function getEdges(coordinates: IndexedCoordinate[]): Coordinate[][] {
 }
 
 
-export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate: IndexedCoordinate, endCoordinate: IndexedCoordinate): IndexedCoordinate[] {
+export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate: IndexedCoordinate, endCoordinate: IndexedCoordinate): PathType {
   // coord.index does not match index of the array
   const indexMap: Map<number, number> = new Map();
   coordinates.forEach((coord, index) => {
@@ -93,11 +93,47 @@ export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate
   }
 
   // reconstruct the path
-  const path: IndexedCoordinate[] = [];
+  const reversedPath: IndexedCoordinate[] = [];
   let current: IndexedCoordinate | null = endCoordinate;
   while (current !== null) {
-    path.push(current);
+    reversedPath.push(current);
     current = previous[indexMap.get(current.index)!];
   }
-  return path.reverse();
+  const path = reversedPath.reverse();
+
+  if (path.length === 0) {
+    return { roads: [], stairs: [] };
+  }
+
+  // separate roads and stairs
+  const roads: IndexedCoordinate[][] = [];
+  const stairs: IndexedCoordinate[][] = [];
+  let currentPath: IndexedCoordinate[] = [];
+  let isStair = path[0].is_stair;
+
+  for (const coord of path) {
+    if (coord.is_stair !== isStair) {
+      if (currentPath.length > 0) {
+        if (isStair) {
+          currentPath.push(coord);
+          stairs.push(currentPath);
+          currentPath = [];
+        } else {
+          roads.push(currentPath);
+          currentPath = [currentPath[currentPath.length - 1]];
+        }
+      }
+      isStair = coord.is_stair;
+    }
+    currentPath.push(coord);
+  }
+  if (currentPath.length > 0) {
+    if (isStair) {
+      stairs.push(currentPath);
+    } else {
+      roads.push(currentPath);
+    }
+  }
+
+  return { roads, stairs };
 }

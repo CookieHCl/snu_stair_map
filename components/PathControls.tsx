@@ -1,9 +1,9 @@
 import { coordinateToString } from "@/lib/coordinateUtils";
-import { IndexedCoordinate } from "@/types/coordinate";
+import { IndexedCoordinate, PathType } from "@/types/coordinate";
 import { MarkerState } from "@/types/markerState";
 
 interface PathControlsProps {
-  fastestPath: IndexedCoordinate[] | null;
+  fastestPath?: PathType;
   noStairs: boolean;
   setNoStairs: (value: boolean) => void;
   markerState: MarkerState;
