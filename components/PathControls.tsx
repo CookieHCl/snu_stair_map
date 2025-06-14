@@ -15,21 +15,27 @@ interface PathControlsProps {
 
 
 export default function PathControls({ fastestPath, noStairs, setNoStairs, markerState, setMarkerState, startCoordinate, endCoordinate, exitPathMode }: PathControlsProps) {
+  console.log("PathControls rendered", fastestPath)
+
   return <>
     <div className="path-controls">
-      {fastestPath ? <div className="path-found">
-        <label>
-          <input
-            type="checkbox"
-            checked={noStairs}
-            onChange={e => setNoStairs(e.target.checked)}
-          />
-          계단 제거
-        </label>
-        <label>
-          경로를 찾았습니다!
-        </label>
-      </div> : <div className="path-not-found">
+      {startCoordinate && endCoordinate ? <div className="path-finished">
+        {fastestPath ? <>
+          <label>
+            <input
+              type="checkbox"
+              checked={noStairs}
+              onChange={e => setNoStairs(e.target.checked)}
+            />
+            계단 제거
+          </label>
+          <label>
+            경로를 찾았습니다!
+          </label>
+        </> : <label>
+          경로가 존재하지 않습니다.
+        </label>}
+      </div> : <div className="path-not-finished">
         {startCoordinate ? "도착지점을 선택해주세요!" : "출발지점을 선택해주세요!"}
       </div>}
       <button
@@ -60,7 +66,7 @@ export default function PathControls({ fastestPath, noStairs, setNoStairs, marke
           display: flex; flex-direction: column; gap: 4px;
           z-index: 1;
         }
-        .path-found {
+        .path-finished {
           display: flex; flex-direction: column; gap: 4px;
         }
         .path-controls button {

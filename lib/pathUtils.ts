@@ -35,7 +35,7 @@ export function getEdges(coordinates: IndexedCoordinate[]): Coordinate[][] {
 }
 
 
-export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate: IndexedCoordinate, endCoordinate: IndexedCoordinate): PathType {
+export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate: IndexedCoordinate, endCoordinate: IndexedCoordinate): PathType | undefined {
   // coord.index does not match index of the array
   const indexMap: Map<number, number> = new Map();
   coordinates.forEach((coord, index) => {
@@ -101,8 +101,8 @@ export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate
   }
   const path = reversedPath.reverse();
 
-  if (path.length === 0) {
-    return { roads: [], stairs: [] };
+  if (path[0] !== startCoordinate) {
+    return undefined;
   }
 
   // separate roads and stairs
