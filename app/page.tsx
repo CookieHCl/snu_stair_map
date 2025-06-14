@@ -15,6 +15,7 @@ import PathControls from "@/components/PathControls";
 import Edges from "@/components/Edges";
 import MarkerControls from "@/components/MarkerControls";
 import { MarkerState } from "@/types/markerState";
+import GetDirections from "@/components/GetDirections";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -54,6 +55,7 @@ export default function Home() {
   const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [noStairs, setNoStairs] = useState(false);
+  const [isPathMode, setIsPathMode] = useState(false);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
 
   const edges = useMemo(() => {
@@ -204,10 +206,12 @@ export default function Home() {
         deletable={deletable}
         setDeletable={setDeletable}
       />
-      {fastestPath && <PathControls
-        noStairs={noStairs}
-        setNoStairs={setNoStairs}
-      />}
+      {
+        isPathMode ? <PathControls
+          noStairs={noStairs}
+          setNoStairs={setNoStairs}
+        /> : <GetDirections startPathMode={() => setIsPathMode(true)} />
+      }
     </div >
     <style jsx>{`
         .map-container {
