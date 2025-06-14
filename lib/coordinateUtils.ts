@@ -10,9 +10,9 @@ export function squaredDistance(a: Coordinate, b: Coordinate): number {
   return dx * dx + dy * dy;
 }
 
-export function getNearestCoordinate(mouseCoordinate: Coordinate, coordinates: IndexedCoordinate[]): IndexedCoordinate | null {
+export function getNearestCoordinate(mouseCoordinate: Coordinate, coordinates: IndexedCoordinate[]): IndexedCoordinate | undefined {
   if (coordinates.length === 0) {
-    return null;
+    return undefined;
   }
 
   let nearestCoordinate = coordinates[0];

@@ -209,7 +209,19 @@ export default function Homepage() {
       {isPathMode ? <PathControls
         fastestPath={fastestPath}
         noStairs={noStairs}
-        setNoStairs={setNoStairs}
+        setNoStairs={(noStairs) => {
+          if (noStairs && (startCoordinate?.is_stair || endCoordinate?.is_stair)) {
+            const filteredCoordinates = coordinates.filter(coord => !coord.is_stair);
+            if (startCoordinate?.is_stair) {
+              setStartCoordinate(getNearestCoordinate(startCoordinate, filteredCoordinates));
+            }
+            if (endCoordinate?.is_stair) {
+              setEndCoordinate(getNearestCoordinate(endCoordinate, filteredCoordinates));
+            }
+            showToast("시작점 또는 끝점이 계단에 위치하고 있어 가장 가까운 도로를 선택합니다.");
+          }
+          setNoStairs(noStairs);
+        }}
         markerState={markerState}
         setMarkerState={setMarkerState}
         startCoordinate={startCoordinate}
