@@ -14,6 +14,7 @@ import { getEdges, getFastestPath } from "@/lib/pathUtils";
 import PathControls from "@/components/PathControls";
 import Edges from "@/components/Edges";
 import MarkerControls from "@/components/MarkerControls";
+import { MarkerState } from "@/types/markerState";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -43,19 +44,12 @@ const CENTER_RANGE: Record<ZoomLevel, { lat: [number, number], lng: [number, num
   },
 }
 
-enum MarkerState {
-  ROAD = 0,
-  STAIR = 1,
-  START = 2,
-  END = 3,
-}
-
 export default function Home() {
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(false)
-  const [markerState, setMarkerState] = useState(MarkerState.START);
+  const [markerState, setMarkerState] = useState(MarkerState.NONE);
   const [deletable, setDeletable] = useState(false) // 삭제 가능 체크박스 상태 추가
   const [startCoordinate, setStartCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
@@ -142,17 +136,14 @@ export default function Home() {
         }}
         level={3} // 지도의 확대 레벨
         onClick={(_, mouseEvent) => {
+          const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
           switch (markerState) {
             case MarkerState.ROAD:
             case MarkerState.STAIR:
-              addCoordinate({
-                lat: mouseEvent.latLng.getLat(),
-                lng: mouseEvent.latLng.getLng()
-              });
+              addCoordinate(mouseCoordinate);
               break;
             case MarkerState.START:
             case MarkerState.END:
-              const mouseCoordinate = { lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng() }
               const otherCoordinate = markerState === MarkerState.START ? endCoordinate : startCoordinate;
               const coordinate = getNearestCoordinate(
                 mouseCoordinate,

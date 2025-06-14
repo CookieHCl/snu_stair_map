@@ -1,9 +1,4 @@
-enum MarkerState {
-  ROAD = 0,
-  STAIR = 1,
-  START = 2,
-  END = 3,
-}
+import { MarkerState } from "@/types/markerState";
 
 interface MarkerControlsProps {
   markerState: MarkerState;
@@ -18,25 +13,25 @@ export default function MarkerControls({ markerState, setMarkerState, deletable,
     <div className="marker-controls">
       <div>
         <button
-          onClick={() => setMarkerState(MarkerState.START)}
+          onClick={() => setMarkerState(markerState === MarkerState.START ? MarkerState.NONE : MarkerState.START)}
           className={markerState === MarkerState.START ? "active" : ""}
         >
           출발
         </button>
         <button
-          onClick={() => setMarkerState(MarkerState.END)}
+          onClick={() => setMarkerState(markerState === MarkerState.END ? MarkerState.NONE : MarkerState.END)}
           className={markerState === MarkerState.END ? "active" : ""}
         >
           도착
         </button>
         <button
-          onClick={() => setMarkerState(MarkerState.ROAD)}
+          onClick={() => setMarkerState(markerState === MarkerState.ROAD ? MarkerState.NONE : MarkerState.ROAD)}
           className={markerState === MarkerState.ROAD ? "active" : ""}
         >
           도로
         </button>
         <button
-          onClick={() => setMarkerState(MarkerState.STAIR)}
+          onClick={() => setMarkerState(markerState === MarkerState.STAIR ? MarkerState.NONE : MarkerState.STAIR)}
           className={markerState === MarkerState.STAIR ? "active" : ""}
         >
           계단
