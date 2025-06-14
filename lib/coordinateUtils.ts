@@ -1,7 +1,7 @@
 import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
 
 export function coordinateToString(coordinate: Coordinate): string {
-  return `${coordinate.lat.toFixed(9)}, ${coordinate.lng.toFixed(9)}`;
+  return `${coordinate.lat.toFixed(9)},${coordinate.lng.toFixed(9)}`;
 }
 
 export function squaredDistance(a: Coordinate, b: Coordinate): number {

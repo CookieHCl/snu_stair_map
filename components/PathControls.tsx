@@ -10,10 +10,11 @@ interface PathControlsProps {
   setMarkerState: (value: MarkerState) => void;
   startCoordinate?: IndexedCoordinate;
   endCoordinate?: IndexedCoordinate;
+  exitPathMode: () => void;
 }
 
 
-export default function PathControls({ fastestPath, noStairs, setNoStairs, markerState, setMarkerState, startCoordinate, endCoordinate }: PathControlsProps) {
+export default function PathControls({ fastestPath, noStairs, setNoStairs, markerState, setMarkerState, startCoordinate, endCoordinate, exitPathMode }: PathControlsProps) {
   return <>
     <div className="path-controls">
       {fastestPath ? <div className="path-found">
@@ -42,6 +43,11 @@ export default function PathControls({ fastestPath, noStairs, setNoStairs, marke
         className={markerState === MarkerState.END ? "active" : ""}
       >
         도착: {endCoordinate ? coordinateToString(endCoordinate) : "-, -"}
+      </button>
+      <button
+        onClick={() => exitPathMode()}
+      >
+        취소
       </button>
     </div>
     <style jsx>{`

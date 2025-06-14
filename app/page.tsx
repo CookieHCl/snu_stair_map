@@ -215,6 +215,13 @@ export default function Home() {
           setMarkerState={setMarkerState}
           startCoordinate={startCoordinate}
           endCoordinate={endCoordinate}
+          exitPathMode={() => {
+            setIsPathMode(false);
+            setStartCoordinate(undefined);
+            setEndCoordinate(undefined);
+            setNoStairs(false);
+            setMarkerState(MarkerState.NONE);
+          }}
         /> : <GetDirections startPathMode={() => setIsPathMode(true)} />
       }
     </div >
