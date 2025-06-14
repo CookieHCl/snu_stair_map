@@ -58,6 +58,8 @@ export default function Home() {
   const [isPathMode, setIsPathMode] = useState(false);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
 
+  const showDebugComponents = true; // Set this to false in production
+
   const edges = useMemo(() => {
     return getEdges(coordinates);
   }, [coordinates]);
@@ -171,59 +173,53 @@ export default function Home() {
           handleCenterChange(map, zoomLevel)
         }}
       >
-        <SNUBorder
-          onMouseStateChange={setIsInSNU}
-        />
-        <CoordinateMarkers
-          coordinates={coordinates}
-          removeCoordinate={removeCoordinate}
-          deletable={deletable} // 삭제 가능 여부 전달
-        />
-        {startCoordinate && (
-          <PathMarker
-            coordinate={startCoordinate}
-            isStart={true}
+        {showDebugComponents && <>
+          <SNUBorder
+            onMouseStateChange={setIsInSNU}
           />
-        )}
-        {endCoordinate && (
-          <PathMarker
-            coordinate={endCoordinate}
-            isStart={false}
+          <CoordinateMarkers
+            coordinates={coordinates}
+            removeCoordinate={removeCoordinate}
+            deletable={deletable} // 삭제 가능 여부 전달
           />
-        )}
-        <Edges
+        </>}
+        {startCoordinate && <PathMarker
+          coordinate={startCoordinate}
+          isStart={true}
+        />}
+        {endCoordinate && <PathMarker
+          coordinate={endCoordinate}
+          isStart={false}
+        />}
+        {showDebugComponents && <Edges
           edges={edges}
-        />
-        {fastestPath && (
-          <Path
-            coordinates={fastestPath}
-          />
-        )}
+        />}
+        {fastestPath && <Path
+          coordinates={fastestPath}
+        />}
       </Map>
-      <MarkerControls
+      {showDebugComponents && <MarkerControls
         markerState={markerState}
         setMarkerState={setMarkerState}
         deletable={deletable}
         setDeletable={setDeletable}
-      />
-      {
-        isPathMode ? <PathControls
-          fastestPath={fastestPath}
-          noStairs={noStairs}
-          setNoStairs={setNoStairs}
-          markerState={markerState}
-          setMarkerState={setMarkerState}
-          startCoordinate={startCoordinate}
-          endCoordinate={endCoordinate}
-          exitPathMode={() => {
-            setIsPathMode(false);
-            setStartCoordinate(undefined);
-            setEndCoordinate(undefined);
-            setNoStairs(false);
-            setMarkerState(MarkerState.NONE);
-          }}
-        /> : <GetDirections startPathMode={() => setIsPathMode(true)} />
-      }
+      />}
+      {isPathMode ? <PathControls
+        fastestPath={fastestPath}
+        noStairs={noStairs}
+        setNoStairs={setNoStairs}
+        markerState={markerState}
+        setMarkerState={setMarkerState}
+        startCoordinate={startCoordinate}
+        endCoordinate={endCoordinate}
+        exitPathMode={() => {
+          setIsPathMode(false);
+          setStartCoordinate(undefined);
+          setEndCoordinate(undefined);
+          setNoStairs(false);
+          setMarkerState(MarkerState.NONE);
+        }}
+      /> : <GetDirections startPathMode={() => setIsPathMode(true)} />}
     </div >
     <style jsx>{`
         .map-container {
