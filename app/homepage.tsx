@@ -49,7 +49,7 @@ const CENTER_RANGE: Record<ZoomLevel, { lat: [number, number], lng: [number, num
 }
 
 export default function Homepage() {
-  const showDebugComponents = true; // Set this to false in production
+  const showDebugComponents = false; // Set this to false in production
 
   useKakaoLoader()
   const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates.coordinates)
