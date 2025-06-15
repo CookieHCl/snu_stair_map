@@ -10,7 +10,7 @@ import initialCoordinates from "@/datas/coordinates.json"
 import { getNearestCoordinate } from "@/lib/coordinateUtils"
 import PathMarker from "@/components/PathMarker";
 import Path from "@/components/Path";
-import { getEdges, getFastestPath } from "@/lib/pathUtils";
+import { getConnectedStairCoordinates, getEdges, getFastestPath } from "@/lib/pathUtils";
 import PathControls from "@/components/PathControls";
 import Edges from "@/components/Edges";
 import MarkerControls from "@/components/MarkerControls";
@@ -19,6 +19,7 @@ import GetDirections from "@/components/GetDirections";
 import { useToast } from "@/components/toast/ToastProvider";
 import snuBuildings from "@/datas/snu_buildings_coords.json";
 import SNUBuildingMarker from "@/components/SNUBuildingMarker";
+import ConnectedStair from "@/components/ConnectedStair";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -66,6 +67,9 @@ export default function Homepage() {
 
   const edges = useMemo(() => {
     return getEdges(coordinates);
+  }, [coordinates]);
+  const connectedStairCoordinates = useMemo(() => {
+    return getConnectedStairCoordinates(coordinates)
   }, [coordinates]);
   const noStairCoordinates = useMemo(() => {
     return coordinates.filter(coord => !coord.is_stair);
@@ -223,6 +227,11 @@ export default function Homepage() {
         {fastestPath && <Path
           path={fastestPath}
         />}
+        {connectedStairCoordinates.map(coordinates =>
+          <ConnectedStair
+            coordinates={coordinates}
+          />
+        )}
       </Map>
       {showDebugComponents && <MarkerControls
         markerState={markerState}

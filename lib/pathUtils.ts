@@ -35,6 +35,88 @@ export function getEdges(coordinates: IndexedCoordinate[]): Coordinate[][] {
   return edges;
 }
 
+// get connected stair coordinates, and add three coordinates on the middle of each edges
+export function getConnectedStairCoordinates(
+  coordinates: IndexedCoordinate[],
+): IndexedCoordinate[][] {
+  const graph = getGraph(coordinates);
+  const visited: boolean[] = Array(coordinates.length).fill(false);
+  const stairs: IndexedCoordinate[][] = [];
+  const indexMap: Map<number, number> = new Map();
+  coordinates.forEach((coord, index) => {
+    indexMap.set(coord.index, index);
+  });
+
+  function dfs(coord: IndexedCoordinate, currentStair: IndexedCoordinate[]) {
+    const index = indexMap.get(coord.index)!;
+    if (visited[index]) return;
+
+    visited[index] = true;
+    currentStair.push(coord);
+
+    graph.get(index)?.forEach(neighbor => {
+      if (neighbor.is_stair && !visited[indexMap.get(neighbor.index)!]) {
+        dfs(neighbor, currentStair);
+      }
+    });
+  }
+
+  for (const coord of coordinates) {
+    if (coord.is_stair && !visited[indexMap.get(coord.index)!]) {
+      const currentStair: IndexedCoordinate[] = [];
+      dfs(coord, currentStair);
+      if (currentStair.length > 0) {
+        stairs.push(currentStair);
+      }
+    }
+  }
+
+  stairs.forEach(stair => {
+    // get all pair of coordinates that are adjacent in the stair
+    const pairs: [IndexedCoordinate, IndexedCoordinate][] = [];
+    for (let i = 0; i < stair.length - 1; i++) {
+      for (let j = i + 1; j < stair.length; j++) {
+        const start = stair[i];
+        const end = stair[j];
+        if (squaredDistance(start, end) < THRESHOLD) {
+          pairs.push([start, end]);
+        }
+      }
+    }
+
+    const extraCoords: IndexedCoordinate[] = [];
+    // for each pairs, add three coordinates on the middle of each edges
+    pairs.forEach(([start, end]) => {
+      const midLat = (start.lat + end.lat) / 2;
+      const midLng = (start.lng + end.lng) / 2;
+      const midCoord1: IndexedCoordinate = {
+        index: -1, // temporary index
+        lat: (start.lat * 2 + end.lat) / 3,
+        lng: (start.lng * 2 + end.lng) / 3,
+        is_stair: true,
+      };
+      const midCoord2: IndexedCoordinate = {
+        index: -1, // temporary index
+        lat: (start.lat + end.lat * 2) / 3,
+        lng: (start.lng + end.lng * 2) / 3,
+        is_stair: true,
+      };
+      const midCoord3: IndexedCoordinate = {
+        index: -1, // temporary index
+        lat: midLat,
+        lng: midLng,
+        is_stair: true,
+      };
+      extraCoords.push(midCoord1, midCoord2, midCoord3);
+    });
+
+    // add the extra coordinates to the stair
+    stair.splice(1, 0, ...extraCoords);
+  });
+
+  return stairs;
+}
+
 
 export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate: IndexedCoordinate, endCoordinate: IndexedCoordinate): PathType | undefined {
   // coord.index does not match index of the array
