@@ -1,6 +1,7 @@
 import { coordinatePrettyString } from "@/lib/coordinateUtils";
-import { IndexedCoordinate, PathType } from "@/types/coordinate";
+import { IndexedCoordinate } from "@/types/coordinate";
 import { MarkerState } from "@/types/markerState";
+import { PathType } from "@/types/path";
 import { SNUBuilding } from "@/types/snu_building";
 
 interface PathControlsProps {
@@ -32,7 +33,7 @@ export default function PathControls({ fastestPath, noStairs, setNoStairs, marke
             계단 제거
           </label>
           <label>
-            경로를 찾았습니다!
+            경로를 찾았습니다! 거리: {(fastestPath.dist / 1000).toFixed(2)}km
           </label>
         </> : <label>
           경로가 존재하지 않습니다.

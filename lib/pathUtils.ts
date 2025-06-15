@@ -1,5 +1,6 @@
-import { Coordinate, IndexedCoordinate, PathType } from "@/types/coordinate";
-import { squaredDistance } from "./coordinateUtils";
+import { Coordinate, IndexedCoordinate } from "@/types/coordinate";
+import { distanceInMeters, squaredDistance } from "./coordinateUtils";
+import { PathType } from "@/types/path";
 
 const THRESHOLD = 0.000000012; // 115 is OK, 125 is not OK
 
@@ -79,7 +80,7 @@ export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate
     graph.get(currentCoordIndex)?.forEach(neighbor => {
       const neighborIndex = indexMap.get(neighbor.index)!;
       if (!visited[neighborIndex]) {
-        const alt = distances[currentCoordIndex] + Math.sqrt(squaredDistance(currentCoord, neighbor));
+        const alt = distances[currentCoordIndex] + distanceInMeters(currentCoord, neighbor);
         if (alt < distances[neighborIndex]) {
           distances[neighborIndex] = alt;
           previous[neighborIndex] = currentCoord;
@@ -134,5 +135,11 @@ export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate
     }
   }
 
-  return { roads, stairs };
+  // calculate total distance
+  const dist = path.reduce((acc, coord, index) => {
+    if (index === 0) return acc;
+    return acc + distanceInMeters(path[index - 1], coord);
+  }, 0);
+
+  return { roads, stairs, dist };
 }
