@@ -42,6 +42,7 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       <div
+        className="toast-container"
         style={{
           position: "fixed",
           top: "20px",
@@ -50,6 +51,8 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
           display: "flex",
           flexDirection: "column-reverse",
           gap: "8px",
+          width: "350px",
+          maxWidth: "90vw",
         }}
       >
         {toasts.map((toast) => (
@@ -61,6 +64,16 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
           />
         ))}
       </div>
+      <style jsx global>{`
+        @media (max-width: 600px) {
+          .toast-container {
+            width: 90vw !important;
+            max-width: 90vw !important;
+            right: 5vw !important;
+            top: 5vw !important;
+          }
+        }
+      `}</style>
     </ToastContext.Provider>
   );
 };

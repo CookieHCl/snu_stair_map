@@ -26,6 +26,13 @@ export default function GetDirections({ startPathMode }: GetDirectionsProps) {
           z-index: 1;
           align-items: center;
         }
+        /* 모바일 환경에서 이미지 크기 조정 */
+        @media (max-width: 600px) {
+          .get-directions :global(img) {
+            width: 75px !important;
+            height: 75px !important;
+          }
+        }
       `}</style>
   </>
 }
