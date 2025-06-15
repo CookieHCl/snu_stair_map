@@ -6,7 +6,7 @@ import { useMemo, useRef, useState } from "react"
 import { IndexedCoordinate, Coordinate } from "@/types/coordinate"
 import CoordinateMarkers from "@components/CoordinateMarkers"
 import SNUBorder from "@components/SnuBorder";
-import { coordinates as initialCoordinates } from "@/datas/coordinates.json"
+import initialCoordinates from "@/datas/coordinates.json"
 import { getNearestCoordinate } from "@/lib/coordinateUtils"
 import PathMarker from "@/components/PathMarker";
 import Path from "@/components/Path";
@@ -52,7 +52,7 @@ export default function Homepage() {
   const showDebugComponents = true; // Set this to false in production
 
   useKakaoLoader()
-  const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates)
+  const [coordinates, setCoordinates] = useState<IndexedCoordinate[]>(initialCoordinates.coordinates)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(3)
   const [isInSNU, setIsInSNU] = useState(!showDebugComponents)
   const [markerState, setMarkerState] = useState(MarkerState.NONE);
@@ -79,7 +79,7 @@ export default function Homepage() {
     else {
       return getFastestPath(coordinates, startCoordinate, endCoordinate);
     }
-  }, [coordinates, startCoordinate, endCoordinate, noStairs]);
+  }, [coordinates, noStairCoordinates, startCoordinate, endCoordinate, noStairs]);
 
   async function saveCoordinates(newCoordinates: IndexedCoordinate[]) {
     setCoordinates(newCoordinates)
