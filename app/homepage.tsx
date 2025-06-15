@@ -196,6 +196,12 @@ export default function Homepage() {
           handleCenterChange(map, zoomLevel)
         }}
       >
+        {showStairs && connectedStairCoordinates.map(coordinates =>
+          <ConnectedStair
+            key={coordinates[0].index}
+            coordinates={coordinates}
+          />
+        )}
         <SNUBorder
           onMouseStateChange={(state) => {
             console.log("SNU Border mouse state changed: ", state);
@@ -229,12 +235,6 @@ export default function Homepage() {
         {fastestPath && <Path
           path={fastestPath}
         />}
-        {showStairs && connectedStairCoordinates.map(coordinates =>
-          <ConnectedStair
-            key={coordinates[0].index}
-            coordinates={coordinates}
-          />
-        )}
       </Map>
       {showDebugComponents && <MarkerControls
         markerState={markerState}
