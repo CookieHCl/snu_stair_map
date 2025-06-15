@@ -190,10 +190,13 @@ export default function Homepage() {
           handleCenterChange(map, zoomLevel)
         }}
       >
+        <SNUBorder
+          onMouseStateChange={(state) => {
+            console.log("SNU Border mouse state changed: ", state);
+            setIsInSNU(state);
+          }}
+        />
         {showDebugComponents && <>
-          <SNUBorder
-            onMouseStateChange={setIsInSNU}
-          />
           <CoordinateMarkers
             coordinates={coordinates}
             removeCoordinate={removeCoordinate}
