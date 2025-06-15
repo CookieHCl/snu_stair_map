@@ -169,14 +169,14 @@ export default function Home() {
           handleCenterChange(map, zoomLevel)
         }}
       >
-        <SNUBorder
+        {/* <SNUBorder
           onMouseStateChange={setIsInSNU}
-        />
-        <CoordinateMarkers
+        /> */}
+        {/* <CoordinateMarkers
           coordinates={coordinates}
           removeCoordinate={removeCoordinate}
           deletable={deletable} // 삭제 가능 여부 전달
-        />
+        /> */}
         {startCoordinate && (
           <PathMarker
             coordinate={startCoordinate}
@@ -189,9 +189,9 @@ export default function Home() {
             isStart={false}
           />
         )}
-        <Edges
+        {/* <Edges
           edges={edges}
-        />
+        /> */}
         {fastestPath && (
           <Path
             coordinates={fastestPath}

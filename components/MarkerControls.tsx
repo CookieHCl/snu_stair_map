@@ -24,7 +24,7 @@ export default function MarkerControls({ markerState, setMarkerState, deletable,
         >
           도착
         </button>
-        <button
+        {/* <button
           onClick={() => setMarkerState(markerState === MarkerState.ROAD ? MarkerState.NONE : MarkerState.ROAD)}
           className={markerState === MarkerState.ROAD ? "active" : ""}
         >
@@ -35,16 +35,16 @@ export default function MarkerControls({ markerState, setMarkerState, deletable,
           className={markerState === MarkerState.STAIR ? "active" : ""}
         >
           계단
-        </button>
+        </button> */}
       </div>
-      <label className="deletable-checkbox">
+      {/* <label className="deletable-checkbox">
         <input
           type="checkbox"
           checked={deletable}
           onChange={e => setDeletable(e.target.checked)}
         />
         삭제 가능
-      </label>
+      </label> */}
     </div>
     <style jsx>{`
         .marker-controls {
