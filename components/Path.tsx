@@ -1,4 +1,4 @@
-import { IndexedCoordinate, PathType } from "@/types/coordinate";
+import { PathType } from "@/types/coordinate";
 import { Polyline } from "react-kakao-maps-sdk";
 
 interface PathProps {

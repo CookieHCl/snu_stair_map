@@ -15,10 +15,14 @@ export async function POST(request: NextRequest) {
 		);
 
 		return NextResponse.json({ success: true, path: 'datas/coordinates.json' });
-	} catch (err: any) {
+	} catch (err) {
 		console.error(err);
+		let errorMessage = 'Invalid error';
+		if (err instanceof Error) {
+			errorMessage = err.message;
+		}
 		return NextResponse.json(
-			{ success: false, error: err.message },
+			{ success: false, error: errorMessage },
 			{ status: 500 }
 		);
 	}

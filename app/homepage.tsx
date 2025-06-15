@@ -200,7 +200,10 @@ export default function Homepage() {
             deletable={deletable} // 삭제 가능 여부 전달
           />
           {
-            snuBuildings.map(building => <SNUBuildingMarker building={building} />)
+            snuBuildings.map(building => <SNUBuildingMarker
+              key={building.dong}
+              building={building}
+            />)
           }
         </>}
         {startCoordinate && <PathMarker

@@ -23,7 +23,7 @@ function getGraph(coordinates: IndexedCoordinate[]): Map<number, IndexedCoordina
 
 export function getEdges(coordinates: IndexedCoordinate[]): Coordinate[][] {
   const graph = getGraph(coordinates);
-  let edges: Coordinate[][] = [];
+  const edges: Coordinate[][] = [];
 
   for (const [index, neighbors] of graph) {
     for (const neighbor of neighbors) {
@@ -47,7 +47,6 @@ export function getFastestPath(coordinates: IndexedCoordinate[], startCoordinate
 
   // dijkstra's algorithm
   const startIndex = indexMap.get(startCoordinate.index);
-  const endIndex = indexMap.get(endCoordinate.index);
   const distances: number[] = Array(coordinates.length).fill(Infinity);
   const previous: (IndexedCoordinate | null)[] = Array(coordinates.length).fill(null);
   const visited: boolean[] = Array(coordinates.length).fill(false);
