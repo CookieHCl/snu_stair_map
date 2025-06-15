@@ -246,6 +246,7 @@ export default function Homepage() {
         showStairs={showStairs}
         setShowStairs={setShowStairs}
         isPathMode={isPathMode}
+        showingPath={Boolean(startCoordinate && endCoordinate)}
       />
       {isPathMode ? <PathControls
         fastestPath={fastestPath}
