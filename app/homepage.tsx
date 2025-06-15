@@ -20,6 +20,7 @@ import { useToast } from "@/components/toast/ToastProvider";
 import snuBuildings from "@/datas/snu_buildings_coords.json";
 import SNUBuildingMarker from "@/components/SNUBuildingMarker";
 import ConnectedStair from "@/components/ConnectedStair";
+import ShowStairs from "@/components/ShowStairs";
 
 const CENTER_LAT = 37.4600110643526;
 const CENTER_LNG = 126.95127303920887;
@@ -62,6 +63,7 @@ export default function Homepage() {
   const [endCoordinate, setEndCoordinate] = useState<IndexedCoordinate | undefined>(undefined);
   const [noStairs, setNoStairs] = useState(false);
   const [isPathMode, setIsPathMode] = useState(false);
+  const [showStairs, setShowStairs] = useState(false);
   const indexRef = useRef(Math.max(...coordinates.map(coord => coord.index)) + 1);
   const { showToast } = useToast();
 
@@ -227,8 +229,9 @@ export default function Homepage() {
         {fastestPath && <Path
           path={fastestPath}
         />}
-        {connectedStairCoordinates.map(coordinates =>
+        {showStairs && connectedStairCoordinates.map(coordinates =>
           <ConnectedStair
+            key={coordinates[0].index}
             coordinates={coordinates}
           />
         )}
@@ -239,6 +242,11 @@ export default function Homepage() {
         deletable={deletable}
         setDeletable={setDeletable}
       />}
+      <ShowStairs 
+        showStairs={showStairs}
+        setShowStairs={setShowStairs}
+        isPathMode={isPathMode}
+      />
       {isPathMode ? <PathControls
         fastestPath={fastestPath}
         noStairs={noStairs}
