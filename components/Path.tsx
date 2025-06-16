@@ -6,7 +6,7 @@ interface PathProps {
 }
 
 export default function Path({ path }: PathProps) {
-  return <>
+  return <div style={{ zIndex: 50 }}>
     <Polyline
       path={path.roads.map(coords => coords.map(coord => ({ lat: coord.lat, lng: coord.lng })))}
       strokeWeight={5}
@@ -21,5 +21,5 @@ export default function Path({ path }: PathProps) {
       strokeOpacity={1.0}
       strokeStyle="solid"
     />
-  </>;
+  </div>;
 }

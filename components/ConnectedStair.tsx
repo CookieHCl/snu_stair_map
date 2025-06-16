@@ -13,7 +13,7 @@ export default function ConnectedStair({ coordinates, onClick }: ConnectedStairP
         center={{ lat: coord.lat, lng: coord.lng }}
         radius={4.5}
         strokeWeight={0}
-        fillColor="#FF00FF"
+        fillColor="#00FF00"
         fillOpacity={1}
         onClick={() => onClick?.(index)} // 클릭 시 해당 좌표의 인덱스 전달
       />
