@@ -5,6 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ```bash
 pnpm install
 echo NEXT_PUBLIC_KAKAO_APP_KEY=$MY_KEY > .env.local
+pnpm dev
 ```
 
 ## Getting Started
